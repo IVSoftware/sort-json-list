@@ -45,6 +45,9 @@ namespace sort_json_list
                     managers.Select(manager => manager.id + "," + manager.name + "," + manager.mobile))
             );
 
+            bool isManagerEnumerable = managers is IEnumerable<Manager>;
+
+            // Prove that the serialization is identical
             File.WriteAllText("repoCopy.json", JsonConvert.SerializeObject(managers));
         }
 
