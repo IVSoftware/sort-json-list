@@ -49,6 +49,11 @@ namespace sort_json_list
 
             // Prove that the serialization is identical
             File.WriteAllText("repoCopy.json", JsonConvert.SerializeObject(managers));
+
+            // NOTE: But what if it's an array?
+            var managersA = JsonConvert.DeserializeObject<Manager[]>(File.ReadAllText("repo.json"));
+            // Then we must cast ToList() first before it will compile:
+            managersA.ToList().Sort((a, b) => a.name.CompareTo(b.name));
         }
 
         class Manager
