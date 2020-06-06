@@ -12,7 +12,7 @@ namespace sort_json_list
     {
         static void Main(string[] args)
         {
-            Example_ManagerIsClassIsObject();
+            Example_ListOfDictionary();
             Console.WriteLine();
             Example_ListOfManager();
             Console.WriteLine();
@@ -23,16 +23,17 @@ namespace sort_json_list
             Console.ReadKey();
         }
 
-        private static void Example_ManagerIsClassIsObject()
+        private static void Example_ListOfDictionary()
         {
-            var managers = JsonConvert.DeserializeObject<Dictionary<string,string>[]>(File.ReadAllText("repo.json"));
+            var managers = JsonConvert.DeserializeObject<List<Dictionary<string,string>>>(File.ReadAllText("repo.json"));
 
-            managers.ToList().Sort((a, b) => a["name"].CompareTo(b["name"]));
+            var sorted = managers.ToList();
+            sorted.Sort((a, b) => a["name"].CompareTo(b["name"]));
 
             Console.WriteLine(
                 string.Join(
                     Environment.NewLine,
-                    managers.Select(manager => manager["id"] + "," + manager["name"] + "," + manager["mobile"]))
+                    sorted.Select(manager => manager["id"] + "," + manager["name"] + "," + manager["mobile"]))
             );
         }
 
@@ -64,19 +65,19 @@ namespace sort_json_list
             // NOTE: But what if it's an array?
             var managers = JsonConvert.DeserializeObject<Manager[]>(File.ReadAllText("repo.json"));
 
-            // Then we must cast ToList() first before it will compile:
-            managers.ToList().Sort((a, b) => a.name.CompareTo(b.name));
+            var sorted = managers.ToList();
+            sorted.Sort((a, b) => a.name.CompareTo(b.name));
 
             Console.WriteLine(
                 string.Join(
                     Environment.NewLine,
-                    managers.Select(manager => manager.id + "," + manager.name + "," + manager.mobile))
+                    sorted.Select(manager => manager.id + "," + manager.name + "," + manager.mobile))
             );
 
-            bool isManagerEnumerable = managers is IEnumerable<Manager>;
+            bool isManagerEnumerable = sorted is IEnumerable<Manager>;
 
             // Prove that the serialization is identical
-            File.WriteAllText("serializeArray.json", JsonConvert.SerializeObject(managers));
+            File.WriteAllText("serializeArray.json", JsonConvert.SerializeObject(sorted));
         }
 
         class Manager
