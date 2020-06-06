@@ -12,9 +12,12 @@ namespace sort_json_list
     {
         static void Main(string[] args)
         {
-            Example_ManagerIsClass();
-            Console.WriteLine();
             Example_ManagerIsClassIsObject();
+            Console.WriteLine();
+            Example_ListOfManager();
+            Console.WriteLine();
+            Example_ArrayOfManager();
+            Console.WriteLine();
 
             // Pause
             Console.ReadKey();
@@ -33,7 +36,7 @@ namespace sort_json_list
             );
         }
 
-        private static void Example_ManagerIsClass()
+        private static void Example_ListOfManager()
         {
             var managers = JsonConvert.DeserializeObject<List<Manager>>(File.ReadAllText("repo.json"));
 
@@ -48,12 +51,32 @@ namespace sort_json_list
             bool isManagerEnumerable = managers is IEnumerable<Manager>;
 
             // Prove that the serialization is identical
-            File.WriteAllText("repoCopy.json", JsonConvert.SerializeObject(managers));
+            File.WriteAllText("serializeList.json", JsonConvert.SerializeObject(managers));
 
             // NOTE: But what if it's an array?
             var managersA = JsonConvert.DeserializeObject<Manager[]>(File.ReadAllText("repo.json"));
             // Then we must cast ToList() first before it will compile:
             managersA.ToList().Sort((a, b) => a.name.CompareTo(b.name));
+        }
+
+        private static void Example_ArrayOfManager()
+        {
+            // NOTE: But what if it's an array?
+            var managers = JsonConvert.DeserializeObject<Manager[]>(File.ReadAllText("repo.json"));
+
+            // Then we must cast ToList() first before it will compile:
+            managers.ToList().Sort((a, b) => a.name.CompareTo(b.name));
+
+            Console.WriteLine(
+                string.Join(
+                    Environment.NewLine,
+                    managers.Select(manager => manager.id + "," + manager.name + "," + manager.mobile))
+            );
+
+            bool isManagerEnumerable = managers is IEnumerable<Manager>;
+
+            // Prove that the serialization is identical
+            File.WriteAllText("serializeArray.json", JsonConvert.SerializeObject(managers));
         }
 
         class Manager
