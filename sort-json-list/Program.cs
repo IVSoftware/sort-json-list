@@ -12,38 +12,42 @@ namespace sort_json_list
     {
         static void Main(string[] args)
         {
-            var managers = JsonConvert.DeserializeObject(File.ReadAllText("repo.json"));
-
-            // We know from info given that 'managers' will 
-            // cast to List of <KeyValuePair<string,string>>[] i.e. Array of KeyValuePair
-            
-            ((List<Dictionary<string, string>>)managers).Sort((a, b) => a["name"].CompareTo(b["name"]));
-
-
-
-            string display = string.Join(
-                Environment.NewLine,
-                ((List<Dictionary<string, string>>)managers)
-                .Select(manager =>
-                    string.Join(
-                        ",", 
-                        ((KeyValuePair<string,string>[])manager).Select(kvp =>kvp.Value))
-                );
-
-
-            List<Manager> managerList = JsonConvert.DeserializeObject<List<Manager>>(File.ReadAllText("repo.json"));
-
-            managerList.Sort((a, b) => a.name.CompareTo(b.name));
-
-            Console.WriteLine(
-                string.Join(
-                    Environment.NewLine,
-                    managerList.Select(manager => manager.id + "," + manager.name + "," + manager.mobile))
-            );
+            Example_ManagerIsClass();
+            Console.WriteLine();
+            Example_ManagerIsClassIsObject();
 
             // Pause
             Console.ReadKey();
         }
+
+        private static void Example_ManagerIsClassIsObject()
+        {
+            var managers = JsonConvert.DeserializeObject<Dictionary<string,string>[]>(File.ReadAllText("repo.json"));
+
+            managers.ToList().Sort((a, b) => a["name"].CompareTo(b["name"]));
+
+            Console.WriteLine(
+                string.Join(
+                    Environment.NewLine,
+                    managers.Select(manager => manager["id"] + "," + manager["name"] + "," + manager["mobile"]))
+            );
+        }
+
+        private static void Example_ManagerIsClass()
+        {
+            var managers = JsonConvert.DeserializeObject<List<Manager>>(File.ReadAllText("repo.json"));
+
+            managers.Sort((a, b) => a.name.CompareTo(b.name));
+
+            Console.WriteLine(
+                string.Join(
+                    Environment.NewLine,
+                    managers.Select(manager => manager.id + "," + manager.name + "," + manager.mobile))
+            );
+
+            File.WriteAllText("repoCopy.json", JsonConvert.SerializeObject(managers));
+        }
+
         class Manager
         {
             public string id { get; set; }
