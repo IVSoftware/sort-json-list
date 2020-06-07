@@ -12,29 +12,15 @@ namespace sort_json_list
     {
         static void Main(string[] args)
         {
-            Example_ListOfDictionary();
-            Console.WriteLine();
             Example_ListOfManager();
             Console.WriteLine();
             Example_ArrayOfManager();
             Console.WriteLine();
+            Example_ListOfDictionary();
+            Console.WriteLine();
 
             // Pause
             Console.ReadKey();
-        }
-
-        private static void Example_ListOfDictionary()
-        {
-            var managers = JsonConvert.DeserializeObject<List<Dictionary<string,string>>>(File.ReadAllText("repo.json"));
-
-            var sorted = managers.ToList();
-            sorted.Sort((a, b) => a["name"].CompareTo(b["name"]));
-
-            Console.WriteLine(
-                string.Join(
-                    Environment.NewLine,
-                    sorted.Select(manager => manager["id"] + "," + manager["name"] + "," + manager["mobile"]))
-            );
         }
 
         private static void Example_ListOfManager()
@@ -78,6 +64,19 @@ namespace sort_json_list
 
             // Prove that the serialization is identical
             File.WriteAllText("serializeArray.json", JsonConvert.SerializeObject(sorted));
+        }
+
+        private static void Example_ListOfDictionary()
+        {
+            var managers = JsonConvert.DeserializeObject<List<Dictionary<string,string>>>(File.ReadAllText("repo.json"));
+
+            managers.Sort((a, b) => a["name"].CompareTo(b["name"]));
+
+            Console.WriteLine(
+                string.Join(
+                    Environment.NewLine,
+                    managers.Select(manager => manager["id"] + "," + manager["name"] + "," + manager["mobile"]))
+            );
         }
 
         class Manager
